@@ -8,69 +8,36 @@
 </head>
 <body>
     <script>
-        
-        function myPromise(){
+        new Promise((resolve,reject)=>{
+            const rnd = Math.random()*1500;
+            setTimeout(function(){
+                resolve('1:'+rnd);
+            },rnd);
+        })
+        .then(r =>{
+            console.log('r');
+            return 7;
+            //製造一個錯誤去讓catch接
+            //throw new Error('my error')
+        })
+        //這裡的r會接受到上一個than回傳的值 7;
+        .then(r =>{
+            console.log('r');
             return new Promise((resolve,reject)=>{
             const rnd = Math.random()*1500;
             setTimeout(function(){
                 resolve('1:'+rnd);
             },rnd);
-        });
-
-        myPromise()
-        .then(r =>{
-            console.log(r);
-            return myPromise();
         })
+        //這裡的r會接受到上一個than回傳的值'1:'+rnd;
         .then(r =>{
-            console.log(r);
-            return myPromise();
-        })
-        .then(r =>{
-            console.log(r);
-            return myPromise();
-        })
-        .then(r =>{
-            console.log(r);
-            return myPromise();
-        })
-        .then(r =>{
-            console.log(r);
-        });
-
-        
-        
-        
-        // new Promise((resolve,reject)=>{
-        //     const rnd = Math.random()*1500;
-        //     setTimeout(function(){
-        //         resolve('1:'+rnd);
-        //     },rnd);
-        // })
-        // .then(r =>{
-        //     console.log('r');
-        //     return 7;
-        //     //製造一個錯誤去讓catch接
-        //     //throw new Error('my error')
-        // })
-        // //這裡的r會接受到上一個than回傳的值 7;
-        // .then(r =>{
-        //     console.log('r');
-        //     return new Promise((resolve,reject)=>{
-        //     const rnd = Math.random()*1500;
-        //     setTimeout(function(){
-        //         resolve('1:'+rnd);
-        //     },rnd);
-        // })
-        // //這裡的r會接受到上一個than回傳的值'1:'+rnd;
-        // .then(r =>{
-        //     console.log('r');
-        //     return 7;
+            console.log('r');
+            return 7;
             
-        // })
-        // .catch(error =>{
-        //     console.log('err');
-        // });
+        })
+        .catch(error =>{
+            console.log('err');
+        });
 
     </script>
 </body>

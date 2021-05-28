@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    new Promise((resolve, reject)=>{
+        const rnd = Math.random()*1500;
+        setTimeout(function(){
+            resolve('1:' + rnd);
+        }, rnd);
+    })
+    .then(r =>{
+        console.log(r);//'1:' + rnd
+        return 7;
+    })
+    .then(r =>{
+        console.log(r);//7
+        return new Promise((resolve, reject)=>{
+            const rnd = Math.random()*1500;
+            setTimeout(function(){
+                resolve('2:' + rnd);
+            }, rnd);
+        });
+    })
+    .then(r =>{//'2:' + rnd
+        console.log(r);
+    });
+
+
+</script>
+</body>
+</html>

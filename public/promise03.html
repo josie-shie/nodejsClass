@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    
+
+    myPromise()
+    //每個.then都會去嗟接上一個return 的值
+    //catch有return也會繼續執行 並將值return給下一個tnan
+    //這樣可以確保每個城市都有執行到
+    //可參考文章https://wcc723.github.io/development/2020/02/16/all-new-promise/
+    .then(r =>{
+        console.log(1, r);
+        return myPromise();
+    })
+    .then(r =>{
+        console.log(2, r);
+        return myPromise();
+    })
+    .then(r =>{
+        console.log(3, r);
+        return myPromise();
+    })
+    .then(r =>{
+        console.log(4, r);
+        return myPromise();
+    })
+    .then(r =>{
+        console.log(5, r);
+    })
+
+
+    /*
+    new Promise((resolve, reject)=>{
+        const rnd = Math.random()*1500;
+        setTimeout(function(){
+            resolve('1:' + rnd);
+        }, rnd);
+    })
+    .then(r =>{
+        console.log(r);
+        return 7;
+    })
+    .then(r =>{
+        console.log(r);
+        return new Promise((resolve, reject)=>{
+            const rnd = Math.random()*1500;
+            setTimeout(function(){
+                resolve('2:' + rnd);
+            }, rnd);
+        });
+    })
+    .then(r =>{
+        console.log(r);
+    })
+*/
+
+</script>
+</body>
+</html>
