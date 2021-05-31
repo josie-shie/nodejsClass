@@ -7,10 +7,14 @@
     <title>Document</title>
 </head>
 <body>
-    <from action="" method="post">
-        <input type="text" name="nickname">
-        <br>
-        <input type="submit">send</input>
+    <!-- 表單要打包要這定enctype="multipart/form-data" -->
+    <!-- bodyPasser只能處理enctype="application/x-www-form-urlencoded" -->
+    <form action="/try-post" method="post" enctype="application/x-www-form-urlencoded">
+         <!-- 表單來為一定要有name屬性資料才會傳過去 -->
+         <input type="text" name="nickname">
+         <input type="hidden" name="say" value="hello">
+         <br>
+         <input type="submit">
     </from> 
 
 </body>
