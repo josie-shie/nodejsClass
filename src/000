@@ -4,9 +4,8 @@ const port = process.env.PORT || 3000;
 const express = require('express');
 
 // const multer = require('multer');
-// const upload = multer({dest: 'tmp_uploads/'}); // 設定暫存的資料夾
-// const {v4: uuidv4} = require('uuid');//uuid為通用唯一辨識碼（英語：Universally Unique Identifier，縮寫：UUID）是用於電腦體系中以辨識資訊的一個128位元識別碼。 根據標準方法生成，不依賴中央機構的註冊和分配，UUID具有唯一性，這與其他大多數編號方案不同。 重複UUID碼概率接近零，
-
+//const upload = multer({dest: 'tmp_uploads/'}); // 設定暫存的資料夾
+// const {v4: uuidv4} = require('uuid');
 const upload = require(__dirname + '/modules/upload-img');
 
 const fs = require('fs');
@@ -58,7 +57,6 @@ app.post('/try-upload', upload.single('avatar'), async (req, res)=>{
     // let newName = '';
     // if(extMap[req.file.mimetype]){
     //     newName = uuidv4() + extMap[req.file.mimetype];
-    //      rename搬動檔案
     //     await fs.promises.rename(req.file.path, './public/img/' + newName);
     // }
 
@@ -68,7 +66,6 @@ app.post('/try-upload', upload.single('avatar'), async (req, res)=>{
     });
 });
 
-//upload.array上傳多檔案
 app.post('/try-uploads', upload.array('photo', 6), (req, res)=>{
     console.log(req.files);
     res.json({
@@ -81,12 +78,7 @@ app.post('/try-uploads', upload.array('photo', 6), (req, res)=>{
 app.get('/pending',  (req, res)=>{
 
 });
-//路由越寬鬆的放後面
-///my-params1/hello 就應該放在寬松露油前面
-//:action :id 可以自己設定參數 是較寬鬆的路由
-app.get('/my-params1/:action/:id', (req, res)=>{
-    res.json(req.params);
-    });
+
 
 
 // 404 放在所有的路由後面
