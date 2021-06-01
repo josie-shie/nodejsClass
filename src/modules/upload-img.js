@@ -19,10 +19,10 @@ const storage = multer.diskStorage({
         cb(null,__dirname + '/../../public/img')
     },
     //儲存的檔名
-    filename:()=>(req,fle,cb)=>{
+    filename:(req,file,cb)=>{
         let ext = extMap[file.mimetype];
         //生成獨一無二的128位元識別碼
-        cb(null,uuid4() + ext);
+        cb(null,uuidv4 + ext);
     },
 });
 
