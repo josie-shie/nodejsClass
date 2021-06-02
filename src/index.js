@@ -2,6 +2,7 @@
 require('dotenv').config();
 const port = process.env.PORT || 3000;
 const express = require('express');
+const session = require('express-session');
 
 // const multer = require('multer');
 // const upload = multer({dest: 'tmp_uploads/'}); // 設定暫存的資料夾
@@ -15,10 +16,34 @@ const app = express();
 
 app.set('view engine', 'ejs');
 
+app.use(session({
+    // 新用戶沒有使用到session 物件時不會建立session 和發送cookie
+    saveUninitialized: false,//必須設定否則warring
+    resave: false, //必須設定否則warring 沒變更內容是否強制回存
+    secret: '加密用的字串可以隨便打 zsexdrctfvgybhjnkml,;',
+    cookie: {
+    //預設為瀏覽器關閉cookie就失效
+    // cookie的有效期限 20分鐘，單位毫秒
+    maxAge: 1200000, 
+
+    }
+}));
+
 app.use(express.urlencoded({extended: false}));  // middleware // 中介軟體
 app.use(express.json()); 
 // app.use(express.static('public'));
 app.use(express.static(__dirname + '/../public'));
+//將某資料夾掛在網址abc底下
+//app.use('abc',express.static(__dirname + '/../public'));
+
+app.use((req, res, next) => {
+    res.locals = {
+        email:'全域的middeware:email',
+        password:'全域的middeware:password'
+    }
+    //必須使用next讓他往下傳遞
+    next();
+})
 
 // 路由定義：開始
 
@@ -43,7 +68,12 @@ app.post('/try-post', (req, res)=>{
 });
 
 app.get('/try-post-form', (req, res)=>{
-    res.render('try-post-form');
+    //res.render('try-post-form');
+    res.locals = {
+        email:'這是預設值email',
+        password:'這是預設password'
+    }
+    res.render('try-post-form')
 });
 app.post('/try-post-form', (req, res)=>{
     res.render('try-post-form', req.body);
@@ -81,6 +111,7 @@ app.post('/try-uploads', upload.array('photo', 6), (req, res)=>{
 app.get('/pending',  (req, res)=>{
 
 });
+
 //路由越寬鬆的放後面
 ///my-params1/hello 就應該放在寬松露油前面
 //:action :id 可以自己設定參數 是較寬鬆的路由
@@ -88,6 +119,39 @@ app.get('/my-params1/:action/:id', (req, res)=>{
     res.json(req.params);
     });
 
+app.get(/\/m\/09\d{2}-?\d{3}-?\d{3}$/i, (req, res)=>{
+    //res.json(req.url);
+    let u = req.url.slice(3);//去除/M/這三個字元
+    u = u.split('?')[0];//去除quer string
+    u = u.split('-').join('-');//將數字的'-'替換成空字串''
+    //u = u.replace(/-/g,'');//方法二 將數字的'-'替換成空字串'' g=所有的字串
+    res.send(`<h2>${u}</h2>`);//讀入新的u
+});
+
+// app.use( require(__dirname + '/routes/admin2') );
+const admin2 = require(__dirname + '/routes/admin2');
+//將admin2掛載網址/admin3之下
+app.use('/admin3', admin2);
+app.use(admin2);
+
+
+app.get('/try-sess', (req, res)=>{
+    req.session.my_var = req.session.my_var || 0; // 預設為0
+    req.session.my_var++;
+    res.json({
+        my_var: req.session.my_var,
+        session: req.session
+    })
+});
+
+app.get('/login', (req, res)=>{
+    res.render('login');
+});
+app.post('/login', (req, res)=>{
+    res.json(req.body)
+});
+app.get('/logout', (req, res)=>{
+});
 
 // 404 放在所有的路由後面
 app.use((req, res)=>{

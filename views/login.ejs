@@ -1,0 +1,42 @@
+<%- include('parts/html-head') %>
+<%- include('parts/navbar') %>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">登入</h5>
+
+                    <form name="form1" method="post" onsubmit="checkForm(); return false;">
+                        <div class="form-group">
+                            <label for="account">Account</label>
+                            <input type="text" class="form-control"
+                                   id="account" name="account" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control"
+                                   id="password" name="password" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">登入</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<%- include('parts/scripts') %>
+<script>
+    function checkForm(){
+        // TODO: 檢查欄位資料格式
+        //''空字串代表相同路徑
+        $.post('', $(document.form1).serialize(), function(data){
+            console.log(data);
+        }, 'json');
+    }
+</script>
+<%- include('parts/html-foot') %>
