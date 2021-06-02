@@ -3,7 +3,9 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-
+            <div class="alert alert-danger" role="alert">
+                帳號或密碼錯誤
+            </div>
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">登入</h5>
@@ -33,7 +35,7 @@
 <script>
     function checkForm(){
         // TODO: 檢查欄位資料格式
-        //''空字串代表相同路徑
+        //空自串代表目錄相同位置
         $.post('', $(document.form1).serialize(), function(data){
             console.log(data);
         }, 'json');

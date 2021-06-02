@@ -135,6 +135,7 @@ app.use('/admin3', admin2);
 app.use(admin2);
 
 
+//確認有無session與製造session
 app.get('/try-sess', (req, res)=>{
     req.session.my_var = req.session.my_var || 0; // 預設為0
     req.session.my_var++;
@@ -145,19 +146,66 @@ app.get('/try-sess', (req, res)=>{
 });
 
 app.get('/login', (req, res)=>{
-    res.render('login');
+    if(req.session.admin){
+        res.redirect('/');  // 若是已登入，轉向到首頁
+    } else {
+        res.render('login');
+    }
 });
+
+//＝＝＝＝＝登入並核對帳號密碼有無正確＝＝＝＝＝＝＝
+
 app.post('/login', (req, res)=>{
-    res.json(req.body)
+    const accounts = {
+        josie: {
+            nickname: '小喬',
+            pw: '7788',
+        },
+        ming: {
+            nickname: '小明',
+            pw: '222222',
+        },
+    };
+    const output = {
+        success: false,
+        code: 0,
+        error: '帳號或密碼錯誤',
+        body: req.body,
+    };
+
+    if(req.body && req.body.account && accounts[req.body.account]){
+        output.code = 100;
+        const item = accounts[req.body.account];
+        if(req.body.password && req.body.password===item.pw){
+
+            req.session.admin = {
+                account: req.body.account,
+                ...item
+            };
+            output.success = true;
+            output.error = '';
+            output.code = 200;
+        }
+    }
+
+    res.json(output)
 });
+
+//＝＝＝＝登出＝＝＝＝＝
 app.get('/logout', (req, res)=>{
+    delete req.session.admin;
+    res.redirect('/');
 });
+
 
 // 404 放在所有的路由後面
 app.use((req, res)=>{
     res.type('text/html');
     res.status(404).send('<h1>找不到頁面</h1>');
 });
+
+
+
 // 路由定義：結束
 
 app.listen(port, ()=>{
