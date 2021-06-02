@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <a href="https://tw.yahoo.com">yahoo</a>
+    <!-- 用onclick呼叫一個fn -->
+    <a href="https://tw.yahoo.com" onclick="func()">yahoo 2</a>
+    <!-- 直接將js寫在裡面 -->
+    <a href="javascript: func();" >yahoo 3</a>
+    <!-- confirm(要顯示的訊息)出現視窗詢問 -->
+    <a href="https://tw.yahoo.com" onclick="return confirm('是否要到 Yahoo?')">yahoo 5</a>
+</div>
+
+<script>
+    const func = ()=>{
+        console.log('hello');
+    }
+    // document.querySelector('a').addEventListener('click', (event)=>{
+    //     event.preventDefault();->阻止連結的跳轉功能
+    //    func();
+    // });
+</script>
+</body>
+</html>

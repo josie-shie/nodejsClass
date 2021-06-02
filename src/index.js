@@ -36,14 +36,16 @@ app.use(express.static(__dirname + '/../public'));
 //將某資料夾掛在網址abc底下
 //app.use('abc',express.static(__dirname + '/../public'));
 
+//
 app.use((req, res, next) => {
-    res.locals = {
-        email:'全域的middeware:email',
-        password:'全域的middeware:password'
-    }
+    // res.locals = {
+    //     email:'全域的middeware:email',
+    //     password:'全域的middeware:password'
+    // }
     //必須使用next讓他往下傳遞
+    res.locals.admin = req.session.admin || {};//把登入的session資料放入locaals
     next();
-})
+});
 
 // 路由定義：開始
 

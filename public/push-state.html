@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+
+<button onclick="p()">test push state</button>
+
+<script>
+    let i = 1;
+    function p() {
+        //向当前浏览器会话的历史堆栈中添加一个状态
+        //pushState(stat,title,url)
+        //state object 是與 pushState() 建立的新瀏覽歷史紀錄有關的一個 JavaScript 物件。只要使用者到了新的 state ，一個 popstate 的事件就會被觸發，然後該事件的 state 屬性會包含一個複製的歷史紀錄的 state object。
+        history.pushState({
+            name: 'peter',
+            age: ++i,
+        }, '', 'myurl-' + i);
+    }
+
+    //当处于激活状态的历史记录条目发生变化时,popstate事件就会在对应window对象上触发. 如果当前处于激活状态的历史记录条目是由history.pushState()方法创建
+    window.onpopstate = function(event){
+        console.log(event.state);
+    };
+</script>
+</body>
+</html>

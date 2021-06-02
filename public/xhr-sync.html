@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+<input type="text"><br>
+<button>test</button>
+<button onclick="send()">send AJAX</button>
+
+<script>
+
+    function send() {
+        const xhr = new XMLHttpRequest();
+        //設定
+        xhr.addEventListener('load', function(event){
+            console.log(xhr.responseText);
+        });
+        // open(請求方式,'路由',async) 方法的第三个参数async的值决定的。如果该参数的值为 false，则该 XMLHttpRequest请求以同步模式进行，否则该过程将以异步模式完成。
+        xhr.open('GET', '/pending', false);
+        //真正啟動送出
+        xhr.send();
+
+    }
+
+
+</script>
+</body>
+</html>
