@@ -19,11 +19,15 @@
             console.log(xhr.responseText);
         });
         // open(請求方式,'路由',async) 方法的第三个参数async的值决定的。如果该参数的值为 false，则该 XMLHttpRequest请求以同步模式进行，否则该过程将以异步模式完成。
+        // 同步的話會塞車，必須一個處理完才處理下一個(按鈕都無法點擊)
         xhr.open('GET', '/pending', false);
         //真正啟動送出
         xhr.send();
 
     }
+
+
+    // 
 
 
 </script>

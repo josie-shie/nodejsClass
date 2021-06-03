@@ -3,6 +3,7 @@ require('dotenv').config();
 const port = process.env.PORT || 3000;
 const express = require('express');
 const session = require('express-session');
+const db = require(__dirname + '/modules/mysql2-connect');
 
 // const multer = require('multer');
 // const upload = multer({dest: 'tmp_uploads/'}); // 設定暫存的資料夾
@@ -53,6 +54,8 @@ app.use((req, res, next) => {
 app.get('/', (req, res)=>{
     res.render('home', {name: 'Shinder'});
 });
+
+
 
 app.get('/json-test', (req, res)=>{
     const d = require(__dirname + '/../data/sales');
@@ -200,12 +203,47 @@ app.get('/logout', (req, res)=>{
 });
 
 
+const moment = require('moment-timezone');
+
+app.get('/try-moment', (req, res)=>{
+const fm = 'YYYY-MM-DD HH:mm:ss';
+const m1 = moment(new Date());
+const m2 = moment('2021-04-15');
+
+res.json({
+    
+    t1: m1.format(fm),
+    //tz('Europe/London')曲的當地時間
+    //format()格式化
+    'london-mo2': m1.tz('Europe/London').format(fm),//夏日節約時間會影響
+    t1a: m1.tz('Europe/London').format(fm),
+    t2: m2.format(fm),
+    
+    });
+});
+
+app.get('/try-db', (req, res)=>{
+    db.query('SELECT * FROM `address_book` LIMIT 5')
+    //promise只會傳遞一個值 如果需要接多個值需要用陣列接住[r]
+    .then(([r])=>{
+        console.log(r);
+    })
+    //如果有錯誤要使用catch
+    .catch(error=>{
+        res.send(error)
+    });
+});
+
+
+app.use('/address-book', require(__dirname + '/routes/address-book'));
+
+
+
 // 404 放在所有的路由後面
 app.use((req, res)=>{
     res.type('text/html');
     res.status(404).send('<h1>找不到頁面</h1>');
 });
-
 
 
 // 路由定義：結束
