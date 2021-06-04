@@ -3,7 +3,12 @@ require('dotenv').config();
 const port = process.env.PORT || 3000;
 const express = require('express');
 const session = require('express-session');
+const MysqlStore = require('express-mysql-session')(session);
 const db = require(__dirname + '/modules/mysql2-connect');
+//存放sessionStore好處是純在這裡不會因為server重啟就不見
+const sessionStore = new MysqlStore({}, db);
+
+
 
 // const multer = require('multer');
 // const upload = multer({dest: 'tmp_uploads/'}); // 設定暫存的資料夾
@@ -14,14 +19,15 @@ const upload = require(__dirname + '/modules/upload-img');
 const fs = require('fs');
 
 const app = express();
-
+    
 app.set('view engine', 'ejs');
 
 app.use(session({
     // 新用戶沒有使用到session 物件時不會建立session 和發送cookie
     saveUninitialized: false,//必須設定否則warring
     resave: false, //必須設定否則warring 沒變更內容是否強制回存
-    secret: '加密用的字串可以隨便打 zsexdrctfvgybhjnkml,;',
+    secret: '加密用的字串可以隨便打 zsexdrctfvgybhjnkml',
+    store: sessionStore,
     cookie: {
     //預設為瀏覽器關閉cookie就失效
     // cookie的有效期限 20分鐘，單位毫秒
@@ -146,7 +152,7 @@ app.get('/try-sess', (req, res)=>{
     req.session.my_var++;
     res.json({
         my_var: req.session.my_var,
-        session: req.session
+        session: req.session,
     })
 });
 

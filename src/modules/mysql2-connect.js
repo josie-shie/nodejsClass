@@ -9,4 +9,4 @@ const pool = mysql.createPool({
     connectionLimit: 10, // 最大連線數 
     queueLimit: 0 //排隊的數量
 });
-module.exports = pool.promise(); // 滙出promise pool
+module.exports = pool.promise(); // 滙出promise 幫裝過的 pool
