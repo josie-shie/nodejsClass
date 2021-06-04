@@ -44,7 +44,7 @@ app.use((req, res, next) => {
     //     password:'全域的middeware:password'
     // }
     //必須使用next讓他往下傳遞
-    res.locals.admin = req.session.admin || {};//把登入的session資料放入locaals
+    res.locals.admin = req.session.admin || {};//把登入的session資料放入locals
     next();
 });
 
