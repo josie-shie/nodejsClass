@@ -17,10 +17,12 @@ let getListData = async (req)=>{
     };
 
     let page = req.query.page || 1;
-    page = parseInt(page);
+    page = parseInt(page);//parseInt強制轉換為整數
 
-    let t_sql = "SELECT COUNT(2) num FROM `address_book` ";
+    //COUNT(1) num -> 指定count出來的總資料束的欄位為num 也可以自己建立名稱
+    let t_sql = "SELECT COUNT(1) num FROM `address_book` ";
     let [r1] = await db.query(t_sql);
+    console.log(r1);
     const perPage = 5; // 每頁要呈現幾筆資料
     const totalRows = r1[0].num; // 資料表的總筆數
 
@@ -43,6 +45,7 @@ let getListData = async (req)=>{
 
             const sql = `SELECT * FROM address_book LIMIT ${(page-1)*perPage}, ${perPage}`;
 
+            //將資料庫的生日格式轉為format(要轉換的格式)
             [rows] = await db.query(sql);
             rows.forEach(el=>{
                 el.birthday = moment(el.birthday).format('YYYY-MM-DD')
