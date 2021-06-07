@@ -7,12 +7,13 @@ const MysqlStore = require('express-mysql-session')(session);
 const db = require(__dirname + '/modules/mysql2-connect');
 //存放sessionStore好處是純在這裡不會因為server重啟就不見
 const sessionStore = new MysqlStore({}, db);
+const cors = require('cors')
 
 
 
 // const multer = require('multer');
 // const upload = multer({dest: 'tmp_uploads/'}); // 設定暫存的資料夾
-// const {v4: uuidv4} = require('uuid');//uuid為通用唯一辨識碼（英語：Universally Unique Identifier，縮寫：UUID）是用於電腦體系中以辨識資訊的一個128位元識別碼。 根據標準方法生成，不依賴中央機構的註冊和分配，UUID具有唯一性，這與其他大多數編號方案不同。 重複UUID碼概率接近零，
+// const {v4: uuidv4} = require('uuid');//uuid為通用唯一辨識碼（英語：Universally Unique Identifier，縮寫：UUID）是用於電腦體系中以辨識資訊的一個128;位元識別碼。 根據標準方法生成，不依賴中央機構的註冊和分配，UUID具有唯一性，這與其他大多數編號方案不同。 重複UUID碼概率接近零，
 
 const upload = require(__dirname + '/modules/upload-img');
 
@@ -21,6 +22,15 @@ const fs = require('fs');
 const app = express();
     
 app.set('view engine', 'ejs');
+
+const corsOptions ={
+
+    origin: function (origin,cb){
+        
+    }
+
+}
+//app.use(cors());
 
 app.use(session({
     // 新用戶沒有使用到session 物件時不會建立session 和發送cookie

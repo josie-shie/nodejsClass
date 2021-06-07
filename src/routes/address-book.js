@@ -1,6 +1,7 @@
 const express = require('express');
 const moment = require('moment-timezone');
 const db = require(__dirname + '/../modules/mysql2-connect');
+const upload = require(__dirname + '/../modules/upload-img');
 
 const router = express.Router();
 
@@ -22,7 +23,7 @@ let getListData = async (req)=>{
     //COUNT(1) num -> 指定count出來的總資料束的欄位為num 也可以自己建立名稱
     let t_sql = "SELECT COUNT(1) num FROM `address_book` ";
     let [r1] = await db.query(t_sql);
-    console.log(r1);
+    //console.log(r1);
     const perPage = 5; // 每頁要呈現幾筆資料
     const totalRows = r1[0].num; // 資料表的總筆數
 
@@ -86,7 +87,7 @@ router.get('/list2', (req, res)=>{
 })
 
 router.get('/add', async (req, res)=>{
-    res.render('address-book/add');
+    res.render('address-book/add2');
 });
 
 //新增資料
@@ -112,7 +113,8 @@ router.post('/add', async (req, res)=>{
 //叫簡約的寫法
 //將data設置物件帶入 
 //因為是將data展開 所以切記欄位名稱樣對應到
-router.post('/add', async (req, res)=>{
+//如果送的是multipart from data 要用upload.none()阻止上傳檔案 但是要解析body
+router.post('/add', upload.none() ,async (req, res)=>{
     // TODO: 輸入的資料檢查
 
     let output = {
@@ -121,11 +123,14 @@ router.post('/add', async (req, res)=>{
         insertId: 0
     };
 
+    //將req.body展開
     const data = {
         ...req.body,
         created_at: new Date()
     }
+    //PHP不能有一個問號帶入陣列的寫法
     const sql = "INSERT INTO `address_book` SET ?";
+    //解構[result]並賦予它值（資料庫撈出來的資料）
     const [results] = await db.query(sql, [ data ]);
 
     if(results.affectedRows===1){
@@ -136,6 +141,62 @@ router.post('/add', async (req, res)=>{
     }
 
     output = {...output, body: req.body};
+    res.json(output);
+});
+
+//刪除
+router.get('/del/:sid', async (req, res)=>{
+    // 測試查看 Referer
+    // return res.json([req.get('Referer'), req.headers]); 
+
+    const sql = "DELETE FROM `address_book` WHERE sid=?";
+    //req.params.sid req路徑裡的sid
+    await db.query(sql, [req.params.sid]);
+
+    if(req.get('Referer')){
+        res.redirect( req.get('Referer') ); //如果擋頭有從哪一頁過來的連結就跳回那一頁
+    } else {
+        res.redirect('/address-book/list');//沒有就回第一頁
+    }
+});
+
+//修改
+
+router.get('/edit/:sid', async (req, res)=>{
+    const sql = "SELECT * FROM address_book WHERE sid=?";
+    const [rs] = await db.query(sql, [req.params.sid]);
+    console.log(rs);
+
+    // 如果沒有找到資料就轉向到列表頁
+    if(! rs.length){
+        return res.redirect('/address-book/list');
+    }
+    //將生日轉換為format的格式
+    rs[0].birthday = moment(rs[0].birthday).format('YYYY-MM-DD')
+    res.render('address-book/edit', rs[0]);
+});
+
+
+router.post('/edit/:sid', upload.none(), async (req, res)=>{
+    let output = {
+        success: false,
+        type: 'danger',
+        error: '',
+        results: {},
+    };
+    const sql = "UPDATE `address_book` SET ? WHERE sid=?";
+    const [results] = await db.query(sql, [req.body, req.params.sid]);
+    console.log(results);
+    output.results = results;
+    if(results.affectedRows && results.changedRows){
+        output.success = true;
+        output.type = 'success';
+    } else if(results.affectedRows){
+        output.error = '資料沒有修改';
+        output.type = 'warning';
+    } else {
+        output.error = '資料修改發生錯誤';
+    }
     res.json(output);
 });
 
